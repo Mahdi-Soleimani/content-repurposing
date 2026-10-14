@@ -8,4 +8,4 @@ pydantic-settings==2.5.2
 boto3==1.35.10
 openai==1.43.0
 asyncpg==0.30.0
-sherpa-onnx==1.13.6
+sherpa-onnx==1.13.8
