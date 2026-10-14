@@ -114,8 +114,11 @@ jobs:
 
       - name: Install Frontend Dependencies
         working-directory: services/web
-        run: npm ci
+        run: npm ci --include=optional
 
       - name: Build Next.js Application
         working-directory: services/web
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          NEXT_PUBLIC_API_URL: "http://localhost:8000"
         run: npm run build
