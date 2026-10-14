@@ -63,20 +63,6 @@ Doing this manually requires hours of listening, transcription, summarization, c
 
 ---
 
-## 📸 Screenshots Gallery
-
-| **Project Dashboard** | **Project Workspace & Sources** |
-|:---:|:---:|
-| ![Project Dashboard](docs/screenshots/01-dashboard.png) | ![Workspace & Sources](docs/screenshots/02-workspace.png) |
-| *Multi-project dashboard with status badges and quick creation* | *Unified workspace managing inputs, media pipelines, and outputs* |
-
-| **YouTube Anti-Bot & Cookies Settings** | **Multi-Format Content Generation** |
-|:---:|:---:|
-| ![YouTube Settings](docs/screenshots/03-youtube-settings.png) | ![Content Generation](docs/screenshots/04-outputs-preview.png) |
-| *Session cookie manager to bypass YouTube bot detection* | *On-demand output selector (Articles, Telegram, Carousel, LinkedIn)* |
-
----
-
 ## ✨ Key Features
 
 ### 📥 1. Multi-Modal Ingestion
