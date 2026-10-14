@@ -1,0 +1,333 @@
+# ============================================================
+# Content Repurposing Platform — Docker Compose
+# ============================================================
+# 8 Services: postgres, redis, minio, n8n, api, media-worker, web, caddy
+# ============================================================
+
+services:
+
+  # ──────────────────────────────────────────────
+  # 1. PostgreSQL
+  # ──────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: crp-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 1.5. n8n PostgreSQL
+  # ──────────────────────────────────────────────
+  n8n-postgres:
+    image: postgres:16-alpine
+    container_name: crp-n8n-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${N8N_POSTGRES_USER:-n8n}
+      POSTGRES_PASSWORD: ${N8N_POSTGRES_PASSWORD:-changeme_in_production}
+      POSTGRES_DB: ${N8N_POSTGRES_DB:-n8n}
+    ports:
+      - "${N8N_POSTGRES_PORT:-5434}:5432"
+    volumes:
+      - ./n8n_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n -d n8n"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 2. Redis
+  # ──────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: crp-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 3. n8n — Workflow Orchestrator
+  # ──────────────────────────────────────────────
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: crp-n8n
+    restart: unless-stopped
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=n8n-postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${N8N_POSTGRES_DB:-n8n}
+      - DB_POSTGRESDB_USER=${N8N_POSTGRES_USER:-n8n}
+      - DB_POSTGRESDB_PASSWORD=${N8N_POSTGRES_PASSWORD:-changeme_in_production}
+      - DB_POSTGRESDB_SCHEMA=public
+      - N8N_BASIC_AUTH_ACTIVE=${N8N_BASIC_AUTH_ACTIVE}
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_HOST=${N8N_HOST:-localhost}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=${N8N_PROTOCOL:-http}
+      - WEBHOOK_URL=http://localhost/
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=168
+      - GENERIC_TIMEZONE=Asia/Tehran
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    depends_on:
+      n8n-postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 4. MinIO — S3-compatible Object Storage (Dev)
+  # ──────────────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    container_name: crp-minio
+    restart: unless-stopped
+    profiles:
+      - minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 5. FastAPI Backend (API)
+  # ──────────────────────────────────────────────
+  api:
+    build:
+      context: ./services/api
+      dockerfile: Dockerfile
+    container_name: crp-api
+    restart: unless-stopped
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - API_DEBUG=${API_DEBUG:-true}
+      - API_ALLOWED_ORIGINS=${API_ALLOWED_ORIGINS}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_REGION=${S3_REGION}
+      - S3_PUBLIC_URL=${S3_PUBLIC_URL}
+      - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL}
+      - N8N_GENERATION_WEBHOOK_URL=${N8N_GENERATION_WEBHOOK_URL}
+      - MEDIA_WORKER_URL=http://media-worker:8001
+      - N8N_URL=http://n8n:5678
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./services/api/app:/app/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 5. Media Worker (Python + FFmpeg + yt-dlp)
+  # ──────────────────────────────────────────────
+  media-worker:
+    build:
+      context: ./services/media-worker
+      dockerfile: Dockerfile
+    container_name: crp-media-worker
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - DATABASE_URL=${DATABASE_URL}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_REGION=${S3_REGION}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - AVALAI_API_KEY=${AVALAI_API_KEY}
+      - AVALAI_BASE_URL=${AVALAI_BASE_URL}
+      - AVALAI_STT_MODEL=${AVALAI_STT_MODEL:-gpt-4o-transcribe}
+      - STT_PROVIDER=${STT_PROVIDER:-shenava}
+      - SHENAVA_MODEL_PATH=${SHENAVA_MODEL_PATH:-/app/models/shenava-koochik}
+    ports:
+      - "${MEDIA_WORKER_PORT:-8001}:8001"
+    volumes:
+      - ./services/media-worker/app:/app/app
+      - media_temp:/tmp/media
+      - ./models:/app/models:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 6. Source Worker (Download Engine)
+  # ──────────────────────────────────────────────
+  source-worker:
+    build:
+      context: ./services/source-worker
+      dockerfile: Dockerfile
+    container_name: crp-source-worker
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=${REDIS_URL}
+      - DATABASE_URL=${DATABASE_URL}
+      - S3_ENDPOINT_URL=${S3_ENDPOINT_URL}
+      - S3_ACCESS_KEY=${S3_ACCESS_KEY}
+      - S3_SECRET_KEY=${S3_SECRET_KEY}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+      - S3_REGION=${S3_REGION}
+      - MEDIA_WORKER_URL=http://media-worker:8001
+    ports:
+      - "8002:8002"
+    volumes:
+      - ./services/source-worker/app:/app/app
+      - source_downloads:/tmp/downloads
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 6. Web (Next.js Frontend — Placeholder)
+  # ──────────────────────────────────────────────
+  web:
+    build:
+      context: ./services/web
+      dockerfile: Dockerfile
+    container_name: crp-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    volumes:
+      - ./services/web:/app
+      - /app/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  # ──────────────────────────────────────────────
+  # 7. Caddy — Reverse Proxy
+  # ──────────────────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    container_name: crp-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+      media-worker:
+        condition: service_healthy
+    networks:
+      - app-network
+
+
+# ──────────────────────────────────────────────
+# Volumes
+# ──────────────────────────────────────────────
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  n8n_data:
+    driver: local
+  media_temp:
+    driver: local
+  caddy_data:
+    driver: local
+  caddy_config:
+    driver: local
+  source_downloads:
+    driver: local
+
+
+# ──────────────────────────────────────────────
+# Networks
+# ──────────────────────────────────────────────
+networks:
+  app-network:
+    driver: bridge

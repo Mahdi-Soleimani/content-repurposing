@@ -1,0 +1,53 @@
+# ──────────────────────────────────────────────
+# Caddy Reverse Proxy Configuration
+# ──────────────────────────────────────────────
+# Development: localhost (auto HTTPS disabled)
+# Production: replace with real domains
+
+{
+	# Disable auto-HTTPS for local development
+	auto_https off
+	admin off
+}
+
+:80 {
+	# ── API routes ──
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	# ── API health (direct) ──
+	handle /health {
+		reverse_proxy api:8000
+	}
+
+	# ── n8n webhook & UI ──
+	handle /n8n/* {
+		uri strip_prefix /n8n
+		reverse_proxy n8n:5678
+	}
+
+	handle /webhook/* {
+		reverse_proxy n8n:5678
+	}
+
+	handle /webhook-test/* {
+		reverse_proxy n8n:5678
+	}
+
+	# ── Media Worker (internal, but exposed for dev) ──
+	handle /media/* {
+		reverse_proxy media-worker:8001
+	}
+
+	# ── Default: Frontend ──
+	handle {
+		reverse_proxy web:3000
+	}
+
+	# Logging
+	log {
+		output stdout
+		format console
+	}
+}

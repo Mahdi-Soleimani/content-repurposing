@@ -1,0 +1,128 @@
+# ============================================================
+# Content Repurposing Platform — .gitignore
+# ============================================================
+
+# ──── Environment & Secrets ────
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+!.env.example
+*.pem
+*.key
+*.crt
+*cookies*.txt
+secrets/
+
+# ──── Python ────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# ──── Node & Next.js ────
+node_modules/
+.next/
+out/
+build/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.turbo/
+
+# ──── AI Models & Heavy Weights (>100MB) ────
+# Model weights must be downloaded via setup scripts or mounted in Docker
+models/
+*.onnx
+*.int8.onnx
+*.bin
+*.tar.gz
+*.safetensors
+
+# ──── Local Data & Docker Runtime Volumes ────
+n8n_data/
+n8n_postgres_data/
+docker/postgres/data/
+docker/redis/data/
+docker/n8n/data/
+docker/caddy/data/
+docker/caddy/config/
+docker/minio/data/
+test_audio/
+source_downloads/
+media_temp/
+
+# ──── Logs & Temporary Files ────
+*.log
+logs/
+tmp/
+temp/
+/tmp/
+
+# ──── IDE & Editor Files ────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# ──── OS Artifacts ────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ──── AI Agents & Tooling Metadata ────
+.agent/
+.agents/
+.antigravity/
+AGENTS.md
+GEMINI.md
+CLAUDE.md
+.cursor/
+.cursorrules
+.windsurf/
+.claude/
+.gemini/
+.github/copilot-instructions.md
+.aider*
+.continue/
+.clinerules
+
+# ──── Scratch and Local Debug Scripts ────
+test_instagram.py
+**/test_insta.py
+**/test_asr.py
+tests/test.txt
