@@ -20,6 +20,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "autoprefixer": "^10.5.4",
+    "lightningcss": "^1.32.0",
     "postcss": "^8.5.26",
     "tailwindcss": "^4.3.3"
   },
