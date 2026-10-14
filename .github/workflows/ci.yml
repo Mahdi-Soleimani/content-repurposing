@@ -108,13 +108,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "npm"
           cache-dependency-path: services/web/package-lock.json
 
       - name: Install Frontend Dependencies
         working-directory: services/web
-        run: npm ci --include=optional
+        run: npm ci --include=optional || npm install --include=optional
 
       - name: Build Next.js Application
         working-directory: services/web
