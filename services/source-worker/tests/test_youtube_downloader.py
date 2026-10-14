@@ -45,51 +45,44 @@ def test_cleanup_directory(tmp_path):
     assert not p4.exists()
     assert p5.exists()  # .txt should not be cleaned up
 
-@pytest.mark.asyncio
-@patch("app.providers.youtube.YoutubeProvider._check_limits")
-@patch("app.providers.youtube.YoutubeProvider._run_process")
-async def test_download_success(mock_run_process, mock_check_limits, provider, tmp_path):
-    mock_check_limits.return_value = None
-    
-    async def fake_run_process(*args, **kwargs):
-        # Simulate yt-dlp creating the wav file after cleanup
-        wav_file = tmp_path / "test.wav"
-        wav_file.write_text("data")
-        return 0, "", ""
+def test_download_success(provider, tmp_path):
+    with patch("app.providers.youtube.YoutubeProvider._check_limits", return_value=None), \
+         patch("app.providers.youtube.YoutubeProvider._prepare_cookies", return_value=None), \
+         patch("app.providers.youtube.YoutubeProvider._run_process") as mock_run_process:
+        async def fake_run_process(*args, **kwargs):
+            # Simulate yt-dlp creating the wav file after cleanup
+            wav_file = tmp_path / "test.wav"
+            wav_file.write_text("data")
+            return 0, "", ""
+            
+        mock_run_process.side_effect = fake_run_process
         
-    mock_run_process.side_effect = fake_run_process
-    
-    result = await provider.download("http://fake.url", str(tmp_path))
-    assert result.success
-    assert result.file_path == str(tmp_path / "test.wav")
+        result = asyncio.run(provider.download("http://fake.url", str(tmp_path)))
+        assert result.success
+        assert result.file_path == str(tmp_path / "test.wav")
 
-@pytest.mark.asyncio
-@patch("app.providers.youtube.YoutubeProvider._check_limits")
-@patch("app.providers.youtube.YoutubeProvider._run_process")
-async def test_download_bot_detection_no_retry(mock_run_process, mock_check_limits, provider, tmp_path):
-    mock_check_limits.return_value = None
-    mock_run_process.return_value = (1, "", "Sign in to confirm you’re not a bot.")
-    
-    result = await provider.download("http://fake.url", str(tmp_path))
-    assert not result.success
-    assert "[BotDetectionError]" in result.error
-    # Should only attempt once because it's a fatal error
-    assert mock_run_process.call_count == 1
+def test_download_bot_detection_no_retry(provider, tmp_path):
+    with patch("app.providers.youtube.YoutubeProvider._check_limits", return_value=None), \
+         patch("app.providers.youtube.YoutubeProvider._prepare_cookies", return_value=None), \
+         patch("app.providers.youtube.YoutubeProvider._run_process") as mock_run_process:
+        mock_run_process.return_value = (1, "", "Sign in to confirm you’re not a bot.")
+        
+        result = asyncio.run(provider.download("http://fake.url", str(tmp_path)))
+        assert not result.success
+        assert "[BotDetectionError]" in result.error
+        # Should only attempt once because it's a fatal error
+        assert mock_run_process.call_count == 1
 
-@pytest.mark.asyncio
-@patch("app.providers.youtube.YoutubeProvider._check_limits")
-@patch("app.providers.youtube.YoutubeProvider._run_process")
-async def test_download_network_retry_exhausted(mock_run_process, mock_check_limits, provider, tmp_path):
-    mock_check_limits.return_value = None
-    mock_run_process.return_value = (1, "", "network timeout")
-    
-    # We don't want to wait the actual backoff times in tests, so patch asyncio.sleep
-    with patch("asyncio.sleep", new_callable=AsyncMock):
-        # Override env var to make test fast
+def test_download_network_retry_exhausted(provider, tmp_path):
+    with patch("app.providers.youtube.YoutubeProvider._check_limits", return_value=None), \
+         patch("app.providers.youtube.YoutubeProvider._prepare_cookies", return_value=None), \
+         patch("app.providers.youtube.YoutubeProvider._run_process") as mock_run_process, \
+         patch.object(asyncio, "sleep", new_callable=AsyncMock):
+        mock_run_process.return_value = (1, "", "network timeout")
         os.environ["YTDLP_MAX_RETRIES"] = "2"
-        result = await provider.download("http://fake.url", str(tmp_path))
+        result = asyncio.run(provider.download("http://fake.url", str(tmp_path)))
         
-    assert not result.success
-    assert "[NetworkError]" in result.error
-    # Should attempt exactly 2 times
-    assert mock_run_process.call_count == 2
+        assert not result.success
+        assert "[NetworkError]" in result.error
+        # Should attempt exactly 2 times
+        assert mock_run_process.call_count == 2

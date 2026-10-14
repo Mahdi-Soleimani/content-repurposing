@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: GitHub Discussions & Questions
+    url: https://github.com/Mahdi-Soleimani/content-repurposing/discussions
+    about: Ask questions and discuss architecture or features with the community.
+  - name: Security Vulnerability Reporting
+    url: https://github.com/Mahdi-Soleimani/content-repurposing/security/advisories/new
+    about: Please report security issues confidentially through GitHub Security Advisories.

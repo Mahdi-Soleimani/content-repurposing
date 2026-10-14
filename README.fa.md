@@ -12,6 +12,9 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/Mahdi-Soleimani/content-repurposing/actions/workflows/ci.yml">
+    <img src="https://github.com/Mahdi-Soleimani/content-repurposing/actions/workflows/ci.yml/badge.svg" alt="CI Status" />
+  </a>
   <img src="https://img.shields.io/badge/مجوز-MIT-blue.svg?style=flat-square" alt="MIT License" />
   <img src="https://img.shields.io/badge/پایتون-3.12-3776AB.svg?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" />
   <img src="https://img.shields.io/badge/فست‌_ای‌پی‌آی-0.115-009688.svg?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI" />

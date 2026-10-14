@@ -1,0 +1,14 @@
+# Gitleaks configuration file
+title = "Gitleaks Configuration for Content Repurposing"
+
+[extend]
+# Inherit standard default rules
+
+[allowlist]
+description = "Global Allowlist for Documentation and Environment Samples"
+paths = [
+  '''\.env\.example$''',
+  '''docs/.*''',
+  '''tests/.*''',
+  '''docker/.*''',
+]

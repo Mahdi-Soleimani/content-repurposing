@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 jobs:
   security:
     name: Security & Secret Scan
@@ -34,8 +37,8 @@ jobs:
       - name: Validate Compose Config
         run: docker compose config
 
-  backend-tests:
-    name: Backend Tests & Lint
+  api-tests:
+    name: API Service Tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -53,7 +56,38 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-asyncio
+          pip install pytest httpx
+          pip install -r services/api/requirements.txt
+
+      - name: Run API Unit Tests
+        env:
+          DATABASE_URL: "postgresql+asyncpg://app:test@localhost:5432/test"
+          REDIS_URL: "redis://localhost:6379/0"
+          SECRET_KEY: "ci-test-secret-key-for-unit-testing-only"
+        run: |
+          cd services/api
+          pytest tests/
+
+  source-worker-tests:
+    name: Source Worker Tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
           pip install -r services/source-worker/requirements.txt
 
       - name: Run Source Worker Unit Tests
