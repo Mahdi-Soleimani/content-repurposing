@@ -119,4 +119,10 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: "1"
           NEXT_PUBLIC_API_URL: "http://localhost:8000"
-        run: npm run build
+        run: |
+          if ! npm run build > /tmp/build.log 2>&1; then
+            cat /tmp/build.log
+            ERR=$(tail -n 15 /tmp/build.log | tr '\n' ' ')
+            echo "::error title=NextBuildError::$ERR"
+            exit 1
+          fi
