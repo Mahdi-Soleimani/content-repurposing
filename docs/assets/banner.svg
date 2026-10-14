@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0f1d"/>
+      <stop offset="50%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+
+    <!-- Accent Gradient -->
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#818cf8" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Grid Pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#334155" stroke-width="0.5" stroke-opacity="0.25"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="360" fill="url(#bg)"/>
+  <rect width="1200" height="360" fill="url(#grid)"/>
+
+  <!-- Ambient Glow -->
+  <circle cx="200" cy="100" r="180" fill="url(#glow)"/>
+  <circle cx="1000" cy="260" r="220" fill="url(#glow)"/>
+
+  <!-- Content Group -->
+  <g transform="translate(100, 80)">
+    <!-- Central Icon/Symbol -->
+    <g transform="translate(0, 20)">
+      <rect x="0" y="0" width="90" height="90" rx="22" fill="#1e293b" stroke="#3b82f6" stroke-width="2" stroke-opacity="0.5"/>
+      <!-- Multimodal Transformation Icon -->
+      <path d="M 28 35 L 45 22 L 62 35" fill="none" stroke="#60a5fa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M 45 25 L 45 62" stroke="#60a5fa" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="45" cy="62" r="5" fill="#ec4899"/>
+      <path d="M 25 55 Q 45 70 65 55" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="3 3"/>
+    </g>
+
+    <!-- Typography -->
+    <text x="120" y="55" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="800" fill="#ffffff" letter-spacing="-0.5">
+      Content Repurposing Platform
+    </text>
+    
+    <text x="120" y="92" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="500" fill="url(#accent)">
+      AI-Powered Multimodal Media Ingestion, Offline ASR &amp; Social Content Engine
+    </text>
+
+    <!-- Feature Pills -->
+    <g transform="translate(120, 125)">
+      <!-- Pill 1: Offline Speech -->
+      <rect x="0" y="0" width="160" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+      <text x="80" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#94a3b8" text-anchor="middle">🎙️ Offline Persian ASR</text>
+
+      <!-- Pill 2: YouTube Anti-Bot -->
+      <rect x="175" y="0" width="180" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+      <text x="265" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#94a3b8" text-anchor="middle">📺 Resilient YT/IG Pipeline</text>
+
+      <!-- Pill 3: n8n Visual Automation -->
+      <rect x="370" y="0" width="165" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+      <text x="452" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#94a3b8" text-anchor="middle">⚡ n8n Orchestration</text>
+
+      <!-- Pill 4: Microservices -->
+      <rect x="550" y="0" width="140" height="32" rx="16" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+      <text x="620" y="21" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="600" fill="#94a3b8" text-anchor="middle">🐳 Docker &amp; Caddy</text>
+    </g>
+  </g>
+</svg>
