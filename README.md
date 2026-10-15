@@ -387,6 +387,6 @@ Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for more details
 
 ## 🙏 Authors & Acknowledgments
 
-- **Mahdi Soleimani** — [GitHub (@Mahdi-Soleimani)](https://github.com/Mahdi-Soleimani)
+- **Mahdi Soleimani** — [GitHub (@Mahdi-Soleimani)](https://github.com/Mahdi-Soleimani) • [LinkedIn](https://www.linkedin.com/in/mahdi-soleimani2003/)
 - **Shenava Team** — For open-sourcing the [Shenava Koochik](https://huggingface.co/Reza2kn/Shenava-Koochik-v1.5-RNNT-sherpa-onnx) speech recognition model for the Persian language.
 - **n8n Community** — For the outstanding workflow automation ecosystem.

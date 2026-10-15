@@ -289,6 +289,6 @@ python -m pytest tests/test_youtube_downloader.py -v
 
 ## 🙏 نویسنده و تقدیر و تشکر
 
-- **مهدی سلیمانی** — [گیت‌هاب (@Mahdi-Soleimani)](https://github.com/Mahdi-Soleimani)
+- **مهدی سلیمانی** — [گیت‌هاب (@Mahdi-Soleimani)](https://github.com/Mahdi-Soleimani) • [لینکدین](https://www.linkedin.com/in/mahdi-soleimani2003/)
 - **تیم شنوا** — بابت انتشار متن‌باز مدل [شنوا کوچیک](https://huggingface.co/Reza2kn/Shenava-Koochik-v1.5-RNNT-sherpa-onnx) برای زبان فارسی.
 - **جامعه n8n** — برای بستر قدرتمند اتوماسیون جریان‌های کاری.

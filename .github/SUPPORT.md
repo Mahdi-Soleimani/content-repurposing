@@ -36,3 +36,4 @@ For private inquiries, project governance, or direct collaboration:
 - **Maintainer**: Mahdi Soleimani
 - **Email**: `mahdisoleimani2003@gmail.com`
 - **GitHub**: [@Mahdi-Soleimani](https://github.com/Mahdi-Soleimani)
+- **LinkedIn**: [Mahdi Soleimani](https://www.linkedin.com/in/mahdi-soleimani2003/)
