@@ -1,36 +1,106 @@
 version: 2
 updates:
+  # ──── Python: API Service ────
   - package-ecosystem: "pip"
     directory: "/services/api"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+      day: "sunday"
+      time: "03:00"
+      timezone: "Asia/Tehran"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      python-minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
+  # ──── Python: Media Worker ────
   - package-ecosystem: "pip"
     directory: "/services/media-worker"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+      day: "sunday"
+      time: "03:00"
+      timezone: "Asia/Tehran"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      python-minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
+  # ──── Python: Source Worker ────
   - package-ecosystem: "pip"
     directory: "/services/source-worker"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+      day: "sunday"
+      time: "03:00"
+      timezone: "Asia/Tehran"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "python"
+    groups:
+      python-minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
+  # ──── Frontend: Next.js Web ────
   - package-ecosystem: "npm"
     directory: "/services/web"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+      day: "sunday"
+      time: "03:00"
+      timezone: "Asia/Tehran"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "javascript"
+    groups:
+      npm-minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    open-pull-requests-limit: 5
-
+  # ──── CI / CD: GitHub Actions ────
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "monthly"
+      interval: "weekly"
+      day: "sunday"
+      time: "03:00"
+      timezone: "Asia/Tehran"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github_actions"
+    groups:
+      actions-minor-and-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
