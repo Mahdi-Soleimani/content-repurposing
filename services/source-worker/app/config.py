@@ -1,6 +1,6 @@
 """Source Worker configuration."""
 
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     """Settings for source-worker."""
@@ -26,8 +26,6 @@ class Settings(BaseSettings):
     DOWNLOAD_MIN_DELAY: int = 10
     DOWNLOAD_MAX_DELAY: int = 30
     
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

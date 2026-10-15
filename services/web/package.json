@@ -2,11 +2,18 @@
   "name": "content-repurposing-web",
   "version": "1.0.0",
   "private": true,
+  "description": "Interactive Next.js dashboard for the Content Repurposing Platform",
+  "license": "MIT",
+  "author": "Mahdi Soleimani <mahdisoleimani2003@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Mahdi-Soleimani/content-repurposing.git",
+    "directory": "services/web"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "next": "latest",

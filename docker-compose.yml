@@ -1,7 +1,7 @@
 # ============================================================
 # Content Repurposing Platform — Docker Compose
 # ============================================================
-# 8 Services: postgres, redis, minio, n8n, api, media-worker, web, caddy
+# Services: postgres, n8n-postgres, redis, n8n, minio, api, media-worker, source-worker, web, caddy
 # ============================================================
 
 services:
@@ -185,7 +185,7 @@ services:
       - app-network
 
   # ──────────────────────────────────────────────
-  # 5. Media Worker (Python + FFmpeg + yt-dlp)
+  # 6. Media Worker (Python + FFmpeg + Transcription)
   # ──────────────────────────────────────────────
   media-worker:
     build:
@@ -228,7 +228,7 @@ services:
       - app-network
 
   # ──────────────────────────────────────────────
-  # 6. Source Worker (Download Engine)
+  # 7. Source Worker (Download Engine)
   # ──────────────────────────────────────────────
   source-worker:
     build:
@@ -259,7 +259,7 @@ services:
       - app-network
 
   # ──────────────────────────────────────────────
-  # 6. Web (Next.js Frontend — Placeholder)
+  # 8. Web (Next.js Interactive Dashboard)
   # ──────────────────────────────────────────────
   web:
     build:
@@ -281,7 +281,7 @@ services:
       - app-network
 
   # ──────────────────────────────────────────────
-  # 7. Caddy — Reverse Proxy
+  # 9. Caddy — Reverse Proxy
   # ──────────────────────────────────────────────
   caddy:
     image: caddy:2-alpine

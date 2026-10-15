@@ -15,7 +15,7 @@ If you discover a security vulnerability within the Content Repurposing Platform
 
 Instead, please report security vulnerabilities responsibly:
 
-1. **Email**: Send detailed information about the vulnerability to `security@mahdisoleimani.com` (or create a private GitHub Security Advisory under the **Security** tab of the repository).
+1. **Email**: Send detailed information about the vulnerability to `mahdisoleimani2003@gmail.com` (or create a private GitHub Security Advisory under the **Security** tab of the repository).
 2. **Details to Include**:
    - Type of vulnerability (e.g., SSRF, SQL Injection, RCE, Broken Object Level Authorization, Information Disclosure).
    - Step-by-step reproduction steps or proof-of-concept (PoC).

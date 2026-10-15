@@ -1,7 +1,7 @@
 """Media Worker configuration via pydantic-settings."""
 
 import os
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -40,9 +40,7 @@ class Settings(BaseSettings):
     # ──── Webhooks ────
     N8N_TRANSCRIPTION_COMPLETED_WEBHOOK_URL: str = ""
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 
 settings = Settings()
