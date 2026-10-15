@@ -26,13 +26,13 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
-    "autoprefixer": "^10.5.4",
-    "lightningcss": "^1.32.0",
-    "postcss": "^8.5.26",
+    "autoprefixer": "^10.6.1",
+    "lightningcss": "^1.33.0",
+    "postcss": "^8.5.29",
     "tailwindcss": "^4.3.3"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.3.3",
-    "lightningcss-linux-x64-gnu": "^1.32.0"
+    "lightningcss-linux-x64-gnu": "^1.33.0"
   }
 }
