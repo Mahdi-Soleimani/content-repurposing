@@ -5,8 +5,8 @@ asyncpg==0.32.0
 redis[hiredis]==5.0.8
 python-multipart==0.0.32
 pydantic==2.14.1
-pydantic-settings==2.15.0
+pydantic-settings==2.16.0
 httpx==0.28.1
 python-jose[cryptography]==3.5.0
 passlib[bcrypt]==1.7.4
-boto3==1.43.111
+boto3==1.43.114
